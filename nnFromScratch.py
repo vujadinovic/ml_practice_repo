@@ -60,6 +60,27 @@ def loss(output, Y):
     return np.sum(np.square(output-Y))/len(y)
 
 def backPropagation(x, y, weights1, weights2, alpha):
+    weightedInputs = x.dot(weights1)
+    activationAppliedToWeightedInputs = sigmoid(weightedInputs)
+    weightedInputs2 = activationAppliedToWeightedInputs.dot(weights2)
+    activationAppliedToWeightedInputs2 = sigmoid(weightedInputs2)
     
+    outputLayerError = activationAppliedToWeightedInputs2 - y
 
+    hiddenLayerError = np.multiply(
+        (weights2.dot(outputLayerError.T)).T,
+        np.multiply(activationAppliedToWeightedInputs, 
+            1 - activationAppliedToWeightedInputs))
+        
+    
+    weights1Adjustment = x.T.dot(hiddenLayerError)
+    weights2Adjustment = activationAppliedToWeightedInputs.T.dot(outputLayerError)
+
+    weights1 = weights1 - (alpha * weights1Adjustment)
+    weights2 = weights2 - (alpha * weights2Adjustment)
+
+    return weights1, weights2
+
+
+    
 
